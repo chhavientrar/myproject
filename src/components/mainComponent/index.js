@@ -27,6 +27,7 @@ import ProjectCards from "./ProjectCards";
 import AddIcon from "@mui/icons-material/Add";
 import AddProject from "./AddProject";
 import Home from "../Home";
+import AnimatedLoader from "../loader/AnimatedLoader";
 
 export default function MediaControlCard() {
   const theme = useTheme();
@@ -37,6 +38,8 @@ export default function MediaControlCard() {
   const [isUploadFromDevice, setIsUploadFromDevice] = useState(false);
   const [userdata, setUserdata] = useState([]);
   const [projectdetails, setProjectDetails] = useState([]);
+
+  const [loadingData, setLoadingdata] = useState(false);
 
   const webcamRef = useRef(null);
   const [imgsrc, setImgsrc] = useState("" ?? userdata?.profileImageUrl);
@@ -115,6 +118,7 @@ export default function MediaControlCard() {
   };
 
   const getUserDetails = async () => {
+    setLoadingdata(true);
     try {
       const response = await axios.get("users/me", {
         headers: {
@@ -125,7 +129,9 @@ export default function MediaControlCard() {
 
       setUserdata(response?.data);
       setProjectDetails(response?.data?.projects);
+      setLoadingdata(false);
     } catch (error) {
+      setLoadingdata(false);
       console.error("Error uploading image:", error);
     }
   };
@@ -136,103 +142,114 @@ export default function MediaControlCard() {
 
   return (
     <>
-      <Grid container justifyContent="center" style={{ background: "#111111" }}>
-        <Grid item md={6} lg={6} xs={12}>
-          <Card
-            sx={{
-              background: "#ffffff",
-              borderRadius: 0,
-              padding: 0,
-            }}
-          >
-            <CardContent sx={{ p: 1 }}>
-              <Grid container alignItems="center">
-                <Grid item>
-                  <Avatar
-                    src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671132.jpg"
-                    alt={userdata?.name}
-                  />
-                </Grid>
-                <Grid item sx={{ ml: 1 }}>
-                  <Typography variant="h6">{userdata?.name}</Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-
-          <Home userdata={userdata} />
-
-          <AddSocialMedia />
-
-          <Card
-            sx={{
-              background: "#ffffff",
-              borderRadius: 0,
-            }}
-          >
-            <Box
+      <Grid
+        container
+        justifyContent="center"
+        style={{ background: "#111111", height: loadingData ? "100vh" : "" }}
+      >
+        {loadingData ? (
+          <AnimatedLoader />
+        ) : (
+          <Grid item md={6} lg={6} xs={12}>
+            <Card
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 3,
+                background: "#ffffff",
+                borderRadius: 0,
+                padding: 0,
               }}
             >
-              <Typography
+              <CardContent sx={{ p: 1 }}>
+                <Grid container alignItems="center">
+                  <Grid item>
+                    <Avatar
+                      src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671132.jpg"
+                      alt={userdata?.name}
+                    />
+                  </Grid>
+                  <Grid item sx={{ ml: 1 }}>
+                    <Typography variant="h6">{userdata?.name}</Typography>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            <Home
+              hover={hover}
+              setHover={setHover}
+              handleOpenUpdateProfile={handleOpenUpdateProfile}
+              userdata={userdata}
+            />
+
+            <AddSocialMedia />
+
+            <Card
+              sx={{
+                background: "#ffffff",
+                borderRadius: 0,
+              }}
+            >
+              <Box
                 sx={{
-                  fontSize: "18px",
-                  fontWeight: 400,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  p: 3,
                 }}
               >
-                My Projects
-              </Typography>
-              <Chip
-                onClick={handleOpenDialog}
-                icon={<AddIcon style={{ color: "#ffffff" }} />}
-                label="Add Project"
-                variant="outlined"
-                sx={{
-                  backgroundColor: "#6F6E71",
-                  color: "#ffffff",
-                  "&:hover": {
-                    backgroundColor: "#333333",
-                  },
-                  padding: "0 8px",
-                }}
-              />
-            </Box>
-            <Grid
-              container
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 2,
-                p: 2,
-                justifyContent:
-                  projectdetails?.length === 0 ? "center" : "flex-start",
-              }}
-            >
-              {projectdetails?.length === 0 ? (
-                <Grid
-                  item
-                  md={12}
-                  xs={12}
-                  sx={{ display: "flex", p: 4, justifyContent: "center" }}
+                <Typography
+                  sx={{
+                    fontSize: "18px",
+                    fontWeight: 400,
+                  }}
                 >
-                  <Typography>There is no any data !</Typography>
-                </Grid>
-              ) : (
-                projectdetails
-                  ?.filter((data) => data !== null)
-                  .map((data) => (
-                    <Grid item xs={12} sm={6} md={4} key={data.id}>
-                      <ProjectCards data={data} />
-                    </Grid>
-                  ))
-              )}
-            </Grid>
-          </Card>
-        </Grid>
+                  My Projects
+                </Typography>
+                <Chip
+                  onClick={handleOpenDialog}
+                  icon={<AddIcon style={{ color: "#ffffff" }} />}
+                  label="Add Project"
+                  variant="outlined"
+                  sx={{
+                    backgroundColor: "#6F6E71",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: "#333333",
+                    },
+                    padding: "0 8px",
+                  }}
+                />
+              </Box>
+              <Grid
+                container
+                spacing={2}
+                sx={{
+                  justifyContent: "flex-start", // Align items to the start of the container
+                  p: 2, // Padding around the grid container
+                }}
+              >
+                {projectdetails?.length === 0 ? (
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ display: "flex", justifyContent: "center", p: 4 }}
+                  >
+                    <Typography variant="body1">
+                      There is no data available.
+                    </Typography>
+                  </Grid>
+                ) : (
+                  projectdetails
+                    ?.filter((data) => data !== null)
+                    .map((data) => (
+                      <Grid item xs={12} sm={6} md={6} key={data.id}>
+                        <ProjectCards data={data} />
+                      </Grid>
+                    ))
+                )}
+              </Grid>
+            </Card>
+          </Grid>
+        )}
       </Grid>
 
       <Dialog

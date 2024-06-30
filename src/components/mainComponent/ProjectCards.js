@@ -43,7 +43,7 @@ export default function ProjectCards({ data }) {
       {viewDetails ? (
         <Card
           sx={{
-            maxWidth: 350,
+            maxWidth: 450,
             flex: "1 1 calc(50% - 16px)",
             mb: 2,
             borderRadius: "20",

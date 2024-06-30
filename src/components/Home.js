@@ -18,8 +18,9 @@ import {
 import axios from "axios";
 import { CloseOutlined } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 
-const Home = ({ userdata }) => {
+const Home = ({ userdata, hover, handleOpenUpdateProfile, setHover }) => {
   const [open, setOpen] = useState(false);
   const [skills, setSkills] = useState(["JavaScript", "React", "Node.js"]);
   const [inputValue, setInputValue] = useState("");
@@ -92,11 +93,38 @@ const Home = ({ userdata }) => {
         }}
       >
         <CardContent sx={{ textAlign: "center" }}>
-          <Avatar
-            src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671132.jpg"
-            alt="Chhavi Srivastav"
-            sx={{ width: 100, height: 100, margin: "0 auto" }}
-          />
+          <Box
+            sx={{
+              position: "relative",
+              display: "inline-block",
+              width: "100px",
+              height: "100px",
+              marginRight: 2,
+            }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+          >
+            <Avatar
+              src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671132.jpg"
+              alt="Chhavi Srivastav"
+              sx={{ width: 100, height: 100, margin: "0 auto" }}
+            />
+            {hover && (
+              <IconButton
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                }}
+                size="large"
+                onClick={handleOpenUpdateProfile}
+              >
+                <CloudUploadOutlinedIcon />
+              </IconButton>
+            )}
+          </Box>
           <Typography variant="h5" sx={{ marginTop: 1 }}>
             {userdata?.name}
           </Typography>
@@ -143,7 +171,7 @@ const Home = ({ userdata }) => {
           />
         </Box>
       </Card>
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={handleClose} fullWidth>
         <DialogTitle>Select or Add Skills</DialogTitle>
         <DialogContent>
           <Autocomplete
@@ -187,7 +215,7 @@ const Home = ({ userdata }) => {
               display: "flex",
               justifyContent: "space-between",
               marginTop: 2,
-              width: "100px",
+              width: "200px",
             }}
           >
             <Button

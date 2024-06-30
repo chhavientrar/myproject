@@ -10,11 +10,12 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import EventCover from "./EventCover";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -36,6 +37,7 @@ const initialValues = {
 };
 
 const AddProject = ({ open, handleClose }) => {
+  const [imageArray, setImageArray] = useState([]);
   const handleSubmit = async (values) => {
     const payload = {
       project: values,
@@ -96,7 +98,7 @@ const AddProject = ({ open, handleClose }) => {
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting, values, handleChange }) => (
+          {({ isSubmitting, values, handleChange, setFieldValue }) => (
             <Form id="add-project-form">
               {" "}
               {/* Add form id */}
@@ -201,39 +203,6 @@ const AddProject = ({ open, handleClose }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-
-                <Grid container md={10} xs={10} p={1}>
-                  <Grid
-                    item
-                    md={3}
-                    xs={3}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-start",
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontSize: "16px", p: 2, fontWeight: 500 }}
-                    >
-                      Cover Image :
-                    </Typography>
-                  </Grid>
-                  <Grid container md={9} xs={9} spacing={1}>
-                    <Grid item md={10.4} xs={10.4}>
-                      <TextField
-                        fullWidth
-                        type="text"
-                        id="cover_image"
-                        label="URL*"
-                        name="cover_image"
-                        value={values?.cover_image}
-                        onChange={handleChange}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
                 <Grid container md={10} xs={10} p={1}>
                   <Grid
                     item
@@ -261,6 +230,35 @@ const AddProject = ({ open, handleClose }) => {
                         name="tools_n_tech"
                         value={values?.tools_n_tech}
                         onChange={handleChange}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                <Grid container md={10} xs={10} p={1}>
+                  <Grid
+                    item
+                    md={3}
+                    xs={3}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: "16px", p: 2, fontWeight: 500 }}
+                    >
+                      Cover Image :
+                    </Typography>
+                  </Grid>
+                  <Grid container md={9} xs={9} spacing={1}>
+                    <Grid item md={10.4} xs={10.4}>
+                      <EventCover
+                        setImageArray={setImageArray}
+                        setValue={setFieldValue}
+                        onChange={handleChange}
+                        imageArray={imageArray}
                       />
                     </Grid>
                   </Grid>
