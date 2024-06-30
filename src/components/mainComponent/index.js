@@ -14,6 +14,7 @@ import {
   IconButton,
   Typography,
   TextField,
+  Chip,
 } from "@mui/material";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import Webcam from "react-webcam";
@@ -23,8 +24,9 @@ import axios from "axios";
 import Skillset from "./Skill";
 import AddSocialMedia from "./AddSocialMedia";
 import ProjectCards from "./ProjectCards";
-import { AddCircleOutline } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import AddProject from "./AddProject";
+import Home from "../Home";
 
 export default function MediaControlCard() {
   const theme = useTheme();
@@ -135,16 +137,15 @@ export default function MediaControlCard() {
   return (
     <>
       <Grid container justifyContent="center" style={{ background: "#111111" }}>
-        <Grid item md={8} lg={8} xs={12}>
+        <Grid item md={6} lg={6} xs={12}>
           <Card
             sx={{
-              border: "1px solid #e4e7ea",
               background: "#ffffff",
               borderRadius: 0,
               padding: 0,
             }}
           >
-            <CardContent sx={{ p: 1, borderBottom: "1px solid #e4e7ea" }}>
+            <CardContent sx={{ p: 1 }}>
               <Grid container alignItems="center">
                 <Grid item>
                   <Avatar
@@ -159,101 +160,47 @@ export default function MediaControlCard() {
             </CardContent>
           </Card>
 
-          <Card
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              padding: 2,
-              borderRadius: 0,
-            }}
-          >
-            <Box
-              sx={{
-                position: "relative",
-                display: "inline-block",
-                width: "100px",
-                height: "100px",
-                marginRight: 2,
-              }}
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-            >
-              <Avatar
-                src="https://img.freepik.com/free-psd/3d-illustration-human-avatar-profile_23-2150671132.jpg"
-                alt={userdata?.name}
-                sx={{ width: "100%", height: "100%" }}
-              />
-              {hover && (
-                <IconButton
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    backgroundColor: "rgba(255, 255, 255, 0.7)",
-                  }}
-                  size="large"
-                  onClick={handleOpenUpdateProfile}
-                >
-                  <CloudUploadOutlinedIcon />
-                </IconButton>
-              )}
-            </Box>
-
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <CardContent sx={{ flex: "1 0 auto" }}>
-                <Typography component="div" variant="h5">
-                  {userdata?.name}
-                </Typography>
-                <Typography
-                  variant="subtitle1"
-                  color="text.secondary"
-                  component="div"
-                >
-                  {userdata?.email}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  component="div"
-                  color="text.secondary"
-                >
-                  Retention, Product, Jar
-                </Typography>
-                <Typography
-                  variant="body2"
-                  component="div"
-                  color="text.secondary"
-                >
-                  Bengaluru, India
-                </Typography>
-              </CardContent>
-            </Box>
-          </Card>
-
-          <Skillset userdata={userdata} />
+          <Home userdata={userdata} />
 
           <AddSocialMedia />
 
           <Card
             sx={{
-              border: "1px solid #e4e7ea",
               background: "#ffffff",
               borderRadius: 0,
             }}
           >
-            <Grid
-              container
+            <Box
               sx={{
                 display: "flex",
-                p: 2,
                 justifyContent: "space-between",
+                alignItems: "center",
+                p: 3,
               }}
             >
-              <Typography variant="h6">My Projects</Typography>
-              <IconButton onClick={handleOpenDialog}>
-                <AddCircleOutline />
-              </IconButton>
-            </Grid>
+              <Typography
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: 400,
+                }}
+              >
+                My Projects
+              </Typography>
+              <Chip
+                onClick={handleOpenDialog}
+                icon={<AddIcon style={{ color: "#ffffff" }} />}
+                label="Add Project"
+                variant="outlined"
+                sx={{
+                  backgroundColor: "#6F6E71",
+                  color: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#333333",
+                  },
+                  padding: "0 8px",
+                }}
+              />
+            </Box>
             <Grid
               container
               sx={{
@@ -277,7 +224,11 @@ export default function MediaControlCard() {
               ) : (
                 projectdetails
                   ?.filter((data) => data !== null)
-                  .map((data) => <ProjectCards data={data} key={data.id} />)
+                  .map((data) => (
+                    <Grid item xs={12} sm={6} md={4} key={data.id}>
+                      <ProjectCards data={data} />
+                    </Grid>
+                  ))
               )}
             </Grid>
           </Card>
